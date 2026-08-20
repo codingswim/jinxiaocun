@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Menu, theme } from 'antd';
-import { AppstoreOutlined, ExportOutlined } from '@ant-design/icons';
+import { Layout, Menu, theme, Button, Space, Typography } from 'antd';
+import {
+  AppstoreOutlined,
+  ExportOutlined,
+  LogoutOutlined,
+} from '@ant-design/icons';
 import type { MenuProps } from 'antd';
+import { getCurrentUser, logoutUser } from '@/utils';
 
 const { Header, Sider, Content } = Layout;
+const { Text } = Typography;
 
 // 菜单项配置：品类管理 / 出货管理
 type MenuItem = Required<MenuProps>['items'][number];
@@ -26,6 +32,8 @@ function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  // 当前登录用户（受保护路由进入时一定存在，仅用于展示）
+  const currentUser = getCurrentUser();
 
   // 当前选中菜单项：根据路径截取一级路由段
   const selectedKey = '/' + (location.pathname.split('/')[1] || 'products');
@@ -37,6 +45,12 @@ function MainLayout() {
   // 点击菜单项路由跳转
   const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
     navigate(key);
+  };
+
+  // 退出登录：清除本地登录状态并跳转登录页
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -86,6 +100,18 @@ function MainLayout() {
           <span style={{ fontSize: 16, fontWeight: 500 }}>
             进销存管理系统
           </span>
+          <Space>
+            {currentUser && (
+              <Text type="secondary">当前用户：{currentUser.username}</Text>
+            )}
+            <Button
+              type="text"
+              icon={<LogoutOutlined />}
+              onClick={handleLogout}
+            >
+              退出登录
+            </Button>
+          </Space>
         </Header>
         <Content
           style={{

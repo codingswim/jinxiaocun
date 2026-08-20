@@ -2,3 +2,12 @@
 export { default as request, get, post, put, del } from './request';
 export type { ApiResponse } from './request';
 export { formatMoney, formatDate } from './format';
+export {
+  isRegistered,
+  registerUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
+  isLoggedIn,
+} from './auth';
+export type { MockUser, CurrentUser } from './auth';
